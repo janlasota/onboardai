@@ -14,7 +14,7 @@ const options = {
   help:    { type: 'boolean', short: 'h', default: false },
   version: { type: 'boolean', short: 'v', default: false },
   format:  { type: 'string',  short: 'f', default: 'all' },
-  output:  { type: 'string',  short: 'o', default: '.' },
+  output:  { type: 'string',  short: 'o' },
   enhance: { type: 'boolean', short: 'e', default: false },
   verbose: { type: 'boolean', default: false },
   dry_run: { type: 'boolean', default: false },
@@ -102,7 +102,10 @@ async function main() {
         }
       }
 
-      const outputDir = resolve(args.values.output);
+      const outputDir =
+        args.values.output !== undefined
+          ? resolve(args.values.output)
+          : targetDir;
       const generated = await generateContextFiles(finalScan, {
         formats,
         outputDir,

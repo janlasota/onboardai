@@ -79,7 +79,7 @@ Options:
   -f, --format <formats>  Target formats (comma-separated)
                            cursor, claude, copilot, windsurf, continue, aider, all
                            Default: all
-  -o, --output <dir>      Output directory (default: current directory)
+  -o, --output <dir>      Output directory (default: same as scanned directory)
   -e, --enhance           Use LLM to enhance generated rules (coming soon)
   -v, --version           Show version
   -h, --help              Show help

@@ -1,0 +1,82 @@
+name: 'AI Context Gen'
+description: 'Auto-generate and sync AI coding assistant context files (.cursorrules, CLAUDE.md, copilot-instructions.md, etc.)'
+author: 'onboardai'
+
+branding:
+  icon: 'cpu'
+  color: 'purple'
+
+inputs:
+  formats:
+    description: 'Comma-separated list of target formats (cursor, claude, copilot, windsurf, continue, aider, all)'
+    required: false
+    default: 'all'
+  directory:
+    description: 'Project directory to scan'
+    required: false
+    default: '.'
+  enhance:
+    description: 'Use LLM enhancement (requires ONBOARDAI_API_KEY secret)'
+    required: false
+    default: 'false'
+  api-key:
+    description: 'API key for --enhance mode (or set ONBOARDAI_API_KEY secret)'
+    required: false
+    default: ''
+  create-pr:
+    description: 'Create a PR with changes instead of committing directly'
+    required: false
+    default: 'true'
+
+outputs:
+  files-changed:
+    description: 'Whether any context files were created or updated'
+    value: ${{ steps.check-changes.outputs.changed }}
+  generated-files:
+    description: 'List of generated files'
+    value: ${{ steps.generate.outputs.files }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install onboardai
+      shell: bash
+      run: npm install -g onboardai
+
+    - name: Generate context files
+      id: generate
+      shell: bash
+      env:
+        ONBOARDAI_API_KEY: ${{ inputs.api-key }}
+      run: |
+        FLAGS="--format ${{ inputs.formats }}"
+        if [ "${{ inputs.enhance }}" = "true" ]; then
+          FLAGS="$FLAGS --enhance"
+        fi
+        
+        cd ${{ inputs.directory }}
+        OUTPUT=$(obi init $FLAGS 2>&1)
+        echo "$OUTPUT"
+        
+        # Extract generated file list
+        FILES=$(echo "$OUTPUT" | grep "✓" | sed 's/.*✓ //' | tr '\n' ',' | sed 's/,$//')
+        echo "files=$FILES" >> $GITHUB_OUTPUT
+
+    - name: Check for changes
+      id: check-changes
+      shell: bash
+      run: |
+        cd ${{ inputs.directory }}
+        if git diff --quiet && git diff --cached --quiet; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "No changes detected in context files."
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "Context files have been updated."
+          git diff --stat
+        fi

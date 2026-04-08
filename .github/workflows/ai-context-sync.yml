@@ -1,0 +1,87 @@
+# .github/workflows/ai-context-sync.yml
+#
+# This workflow keeps your AI coding assistant context files
+# (.cursorrules, CLAUDE.md, copilot-instructions.md, etc.)
+# in sync with your codebase.
+#
+# It runs on every push to main and opens a PR if any
+# context files need updating.
+#
+# Copy this file to your repo's .github/workflows/ directory.
+
+name: Sync AI Context Files
+
+on:
+  push:
+    branches: [main, master]
+    paths-ignore:
+      - '.cursorrules'
+      - 'CLAUDE.md'
+      - '.github/copilot-instructions.md'
+      - '.windsurfrules'
+      - '.continuerc.json'
+      - '.aider.conventions.md'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install onboardai
+        run: npm install -g onboardai
+
+      - name: Generate context files
+        run: obi init --format all
+        env:
+          # Optional: uncomment for LLM-enhanced rules
+          # ONBOARDAI_API_KEY: ${{ secrets.ONBOARDAI_API_KEY }}
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update AI context files'
+          title: '🤖 Update AI context files'
+          body: |
+            Auto-generated update to AI coding assistant context files.
+
+            This PR was created by [onboardai](https://github.com/YOUR_USERNAME/onboardai) after detecting changes in the codebase that affect AI context.
+
+            **Updated files may include:**
+            - `.cursorrules` (Cursor)
+            - `CLAUDE.md` (Claude Code)
+            - `.github/copilot-instructions.md` (GitHub Copilot)
+            - `.windsurfrules` (Windsurf)
+            - `.continuerc.json` (Continue.dev)
+            - `.aider.conventions.md` (Aider)
+
+            Please review the changes to ensure they accurately reflect your project's conventions.
+          branch: ai-context-update
+          delete-branch: true
+          labels: |
+            automated
+            ai-context

@@ -1,0 +1,37 @@
+{
+  "name": "onboardai",
+  "version": "0.1.0",
+  "description": "Auto-generate AI coding assistant context files (.cursorrules, CLAUDE.md, .github/copilot-instructions.md) from your codebase",
+  "type": "module",
+  "bin": {
+    "onboardai": "./bin/cli.js",
+    "obi": "./bin/cli.js"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node bin/cli.js",
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "ai",
+    "cursor",
+    "claude",
+    "copilot",
+    "windsurf",
+    "coding-assistant",
+    "context",
+    "rules",
+    "developer-tools",
+    "cli"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ]
+}

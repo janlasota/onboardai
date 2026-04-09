@@ -31,7 +31,7 @@ async function main() {
   }
 
   if (args.values.version) {
-    console.log('onboardai v0.1.0');
+    console.log('onboardai v0.1.1');
     process.exit(0);
   }
 

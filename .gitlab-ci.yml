@@ -1,0 +1,81 @@
+# .gitlab-ci.yml
+#
+# Keeps your AI coding assistant context files
+# (.cursorrules, CLAUDE.md, copilot-instructions.md, etc.)
+# in sync with your codebase.
+#
+# Runs on every push to the default branch and opens a merge request
+# if any context files need updating.
+#
+# Setup:
+#   1. Copy this file to your repo root
+#   2. Create a Project Access Token with `api` + `write_repository` scopes
+#   3. Store it as a CI/CD variable named PROJECT_ACCESS_TOKEN
+#      (Settings > CI/CD > Variables)
+
+stages:
+  - sync
+
+sync-ai-context:
+  stage: sync
+  image: node:20-alpine
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - "**/*.js"
+        - "**/*.ts"
+        - "**/*.jsx"
+        - "**/*.tsx"
+        - "**/*.py"
+        - "**/*.go"
+        - "**/*.rs"
+        - "package.json"
+        - "go.mod"
+        - "Cargo.toml"
+        - "requirements.txt"
+        - "pyproject.toml"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "web"   # Allow manual trigger
+      when: always
+  script:
+    # Install onboardai
+    - npm install -g onboardai
+
+    # Generate context files
+    - obi init --format all
+    # Uncomment for LLM-enhanced rules (requires PROJECT_ONBOARDAI_KEY variable):
+    # - obi init --format all --enhance
+
+    # Check if anything changed
+    - |
+      if git diff --quiet; then
+        echo "No changes to context files. Skipping MR."
+        exit 0
+      fi
+
+    # Configure git
+    - git config user.email "onboardai-bot@users.noreply.gitlab.com"
+    - git config user.name "onboardai[bot]"
+
+    # Push changes to a new branch
+    - BRANCH="ai-context-update-${CI_COMMIT_SHORT_SHA}"
+    - git checkout -b "$BRANCH"
+    - git add .cursorrules CLAUDE.md .windsurfrules .continuerc.json .aider.conventions.md .gitlab/copilot-instructions.md 2>/dev/null || true
+    - git add .github/copilot-instructions.md 2>/dev/null || true
+    - git commit -m "chore: update AI context files"
+    - git push "https://oauth2:${PROJECT_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git" "$BRANCH"
+
+    # Open a merge request via the GitLab API
+    - |
+      curl --silent --fail --request POST \
+        --header "PRIVATE-TOKEN: ${PROJECT_ACCESS_TOKEN}" \
+        --header "Content-Type: application/json" \
+        --data "{
+          \"source_branch\": \"${BRANCH}\",
+          \"target_branch\": \"${CI_DEFAULT_BRANCH}\",
+          \"title\": \"chore: update AI context files\",
+          \"description\": \"Auto-generated update to AI coding assistant context files.\n\nCreated by [onboardai](https://github.com/janlasota/onboardai).\",
+          \"remove_source_branch\": true,
+          \"labels\": \"automated,ai-context\"
+        }" \
+        "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/merge_requests"

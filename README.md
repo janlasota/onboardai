@@ -93,12 +93,19 @@ Options:
 JavaScript, TypeScript, Python, Ruby, Go, Rust, Java, Kotlin, C#, PHP, Swift, Dart, Elixir, and more.
 
 ### Frameworks
+
 **Frontend:** React, Next.js, Vue, Nuxt, Svelte, SvelteKit, Angular, Astro, Remix, Gatsby
+
 **Backend:** Express, Fastify, Hono, Django, Flask, FastAPI, Rails, Gin, Echo, Fiber, Actix, Axum
+
 **Mobile:** React Native, Expo, Flutter
+
 **CSS:** Tailwind CSS
+
 **ORM:** Prisma, Drizzle
+
 **Monorepo:** Turborepo, Nx
+
 **Tooling:** Vite, Docker
 
 ### Conventions
@@ -128,10 +135,10 @@ JavaScript, TypeScript, Python, Ruby, Go, Rust, Java, Kotlin, C#, PHP, Swift, Da
 Running against a Next.js 14 + Prisma + Tailwind project:
 
 ```
-  ┌─────────────────────────────────────┐
-  │         onboardai v0.1.0        │
-  │   Universal AI Context Generator     │
-  └─────────────────────────────────────┘
+  ┌──────────────────────────────────────────┐
+  │            onboardai v0.1.0              │
+  │   Onboard AI to your codebase in seconds │
+  └──────────────────────────────────────────┘
 
   Scanning: /home/user/my-saas-app
 
@@ -197,7 +204,7 @@ Enhancement analyzes your actual code patterns to generate:
 - Error handling and state management patterns
 - Security and performance guidelines
 
-Get a free API key (3 scans/month) at [onboardai.dev/signup](https://onboardai.dev/signup).
+API keys coming soon — follow the repo for updates.
 
 ## GitHub Action
 
@@ -255,7 +262,3 @@ Contributions are welcome! The best ways to help:
 2. **Improve convention inference** — see `src/analyzers/conventions.js`
 3. **Add generator formats** — see `src/generators/` for examples
 4. **Report bugs** — open an issue with your project structure (anonymized)
-
-## License
-
-MIT

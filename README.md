@@ -136,7 +136,7 @@ Running against a Next.js 14 + Prisma + Tailwind project:
 
 ```
   ┌──────────────────────────────────────────┐
-  │            onboardai v0.1.0              │
+  │            onboardai v0.1.3              │
   │   Onboard AI to your codebase in seconds │
   └──────────────────────────────────────────┘
 

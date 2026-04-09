@@ -1,6 +1,6 @@
 {
   "name": "onboardai",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Auto-generate AI coding assistant context files (.cursorrules, CLAUDE.md, .github/copilot-instructions.md) from your codebase",
   "type": "module",
   "bin": {

@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
 import { parseArgs } from 'node:util';
-import { resolve } from 'node:path';
-import { existsSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const { version } = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf8'));
 import { scanProject } from '../src/scanner.js';
 import { generateContextFiles } from '../src/generator.js';
 import { enhanceScanResults, mergeEnhanced } from '../src/enhance.js';
@@ -31,7 +35,7 @@ async function main() {
   }
 
   if (args.values.version) {
-    console.log('onboardai v0.1.2');
+    console.log(`onboardai v${version}`);
     process.exit(0);
   }
 
@@ -61,7 +65,7 @@ async function main() {
     }
   }
 
-  printBanner();
+  printBanner(version);
 
   switch (command) {
     case 'init':

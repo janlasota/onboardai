@@ -7,10 +7,14 @@ const YELLOW = '\x1b[33m';
 const RED = '\x1b[31m';
 const MAGENTA = '\x1b[35m';
 
-export function printBanner() {
+export function printBanner(version) {
+  const v = `onboardai v${version}`;
+  const pad = 42 - v.length;
+  const left = Math.floor(pad / 2);
+  const right = pad - left;
   console.log(`
   ${CYAN}${BOLD}┌──────────────────────────────────────────┐${RESET}
-  ${CYAN}${BOLD}│            onboardai v0.1.2              │${RESET}
+  ${CYAN}${BOLD}│${' '.repeat(left)}${v}${' '.repeat(right)}│${RESET}
   ${CYAN}${BOLD}│   Onboard AI to your codebase in seconds │${RESET}
   ${CYAN}${BOLD}└──────────────────────────────────────────┘${RESET}`);
 }

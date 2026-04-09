@@ -10,8 +10,8 @@ const MAGENTA = '\x1b[35m';
 export function printBanner() {
   console.log(`
   ${CYAN}${BOLD}┌──────────────────────────────────────────┐${RESET}
-  ${CYAN}${BOLD}│            onboardai v0.1.0               │${RESET}
-  ${CYAN}${BOLD}│   Onboard AI to your codebase in seconds  │${RESET}
+  ${CYAN}${BOLD}│            onboardai v0.1.0              │${RESET}
+  ${CYAN}${BOLD}│   Onboard AI to your codebase in seconds │${RESET}
   ${CYAN}${BOLD}└──────────────────────────────────────────┘${RESET}`);
 }
 

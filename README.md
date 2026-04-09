@@ -69,7 +69,7 @@ npm install -D onboardai
 ```
 Usage:
   onboardai [command] [directory] [options]
-  acg [command] [directory] [options]
+  obi [command] [directory] [options]
 
 Commands:
   init, generate    Scan project and generate context files (default)
@@ -80,7 +80,7 @@ Options:
                            cursor, claude, copilot, windsurf, continue, aider, all
                            Default: all
   -o, --output <dir>      Output directory (default: same as scanned directory)
-  -e, --enhance           Use LLM to enhance generated rules (coming soon)
+  -e, --enhance           Use LLM to enhance generated rules (requires ONBOARDAI_API_KEY)
   -v, --version           Show version
   -h, --help              Show help
   --verbose               Show detailed scan output
@@ -201,7 +201,13 @@ Get a free API key (3 scans/month) at [onboardai.dev/signup](https://onboardai.d
 
 ## GitHub Action
 
-Keep your context files automatically in sync with your codebase. Add this workflow to `.github/workflows/ai-context-sync.yml`:
+Keep your context files automatically in sync with your codebase.
+
+### Option 1: Copy the example workflow
+
+Copy [`.github/workflows/ai-context-sync.yml`](.github/workflows/ai-context-sync.yml) from this repo into your own project. It runs on every push to `main`, detects whether any context files changed, and opens a PR for review when they do.
+
+### Option 2: Use the reusable action
 
 ```yaml
 name: Sync AI Context Files
@@ -220,35 +226,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: janlasota/onboardai@main
         with:
-          node-version: '20'
-
-      - run: npm install -g onboardai
-      - run: obi init --format all
-
-      - name: Check for changes
-        id: changes
-        run: |
-          if git diff --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create Pull Request
-        if: steps.changes.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: 'chore: update AI context files'
-          title: '🤖 Update AI context files'
-          branch: ai-context-update
-          delete-branch: true
+          formats: all        # or cursor,claude,copilot etc.
+          create-pr: 'true'   # open a PR instead of committing directly
+          # enhance: 'true'   # uncomment + add ONBOARDAI_API_KEY secret for LLM enhancement
+          # api-key: ${{ secrets.ONBOARDAI_API_KEY }}
 ```
 
-This runs on every push to main. When your codebase changes in ways that affect context (new dependencies, restructured directories, etc.), it opens a PR with the updated files for review.
-
-For LLM-enhanced CI runs, add `ONBOARDAI_API_KEY` as a repository secret and pass `--enhance` to the command.
+When your codebase changes in ways that affect context (new dependencies, restructured directories, changed conventions), it opens a PR with the updated files for review.
 
 ## Roadmap
 

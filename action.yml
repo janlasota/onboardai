@@ -24,17 +24,28 @@ inputs:
     required: false
     default: ''
   create-pr:
-    description: 'Create a PR with changes instead of committing directly'
+    description: 'Create a PR with changes instead of committing directly to the branch'
     required: false
     default: 'true'
+  commit-message:
+    description: 'Commit message for context file updates'
+    required: false
+    default: 'chore: update AI context files'
+  pr-branch:
+    description: 'Branch name to use when creating a PR'
+    required: false
+    default: 'ai-context-update'
 
 outputs:
   files-changed:
     description: 'Whether any context files were created or updated'
     value: ${{ steps.check-changes.outputs.changed }}
   generated-files:
-    description: 'List of generated files'
+    description: 'Comma-separated list of generated files'
     value: ${{ steps.generate.outputs.files }}
+  pull-request-url:
+    description: 'URL of the created pull request (when create-pr is true)'
+    value: ${{ steps.create-pr.outputs.pull-request-url }}
 
 runs:
   using: 'composite'
@@ -58,11 +69,11 @@ runs:
         if [ "${{ inputs.enhance }}" = "true" ]; then
           FLAGS="$FLAGS --enhance"
         fi
-        
+
         cd ${{ inputs.directory }}
         OUTPUT=$(obi init $FLAGS 2>&1)
         echo "$OUTPUT"
-        
+
         # Extract generated file list
         FILES=$(echo "$OUTPUT" | grep "✓" | sed 's/.*✓ //' | tr '\n' ',' | sed 's/,$//')
         echo "files=$FILES" >> $GITHUB_OUTPUT
@@ -80,3 +91,42 @@ runs:
           echo "Context files have been updated."
           git diff --stat
         fi
+
+    - name: Configure git user
+      if: steps.check-changes.outputs.changed == 'true'
+      shell: bash
+      run: |
+        git config --global user.name "onboardai[bot]"
+        git config --global user.email "onboardai[bot]@users.noreply.github.com"
+
+    - name: Commit and push directly
+      if: steps.check-changes.outputs.changed == 'true' && inputs.create-pr == 'false'
+      shell: bash
+      run: |
+        cd ${{ inputs.directory }}
+        git add .cursorrules CLAUDE.md .windsurfrules .continuerc.json .aider.conventions.md .github/copilot-instructions.md 2>/dev/null || true
+        git commit -m "${{ inputs.commit-message }}"
+        git push
+
+    - name: Create Pull Request
+      id: create-pr
+      if: steps.check-changes.outputs.changed == 'true' && inputs.create-pr != 'false'
+      uses: peter-evans/create-pull-request@v6
+      with:
+        token: ${{ github.token }}
+        commit-message: ${{ inputs.commit-message }}
+        branch: ${{ inputs.pr-branch }}
+        delete-branch: true
+        title: 'chore: update AI context files'
+        body: |
+          Auto-generated update to AI coding assistant context files.
+
+          This PR was created by the [onboardai](https://github.com/janlasota/onboardai) action after detecting changes in the codebase.
+
+          **Files updated:**
+          ${{ steps.generate.outputs.files }}
+
+          Please review the changes to ensure they accurately reflect your project's conventions.
+        labels: |
+          automated
+          ai-context

@@ -10,7 +10,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node bin/cli.js",
-    "test": "node --test test/"
+    "test": "node --test 'test/*.test.js'"
   },
   "keywords": [
     "ai",

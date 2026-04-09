@@ -69,7 +69,7 @@ jobs:
           body: |
             Auto-generated update to AI coding assistant context files.
 
-            This PR was created by [onboardai](https://github.com/YOUR_USERNAME/onboardai) after detecting changes in the codebase that affect AI context.
+            This PR was created by [onboardai](https://github.com/janlasota/onboardai) after detecting changes in the codebase that affect AI context.
 
             **Updated files may include:**
             - `.cursorrules` (Cursor)

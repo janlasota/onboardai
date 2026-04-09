@@ -17,7 +17,7 @@ const options = {
   output:  { type: 'string',  short: 'o' },
   enhance: { type: 'boolean', short: 'e', default: false },
   verbose: { type: 'boolean', default: false },
-  dry_run: { type: 'boolean', default: false },
+  'dry-run': { type: 'boolean', default: false },
 };
 
 async function main() {
@@ -75,7 +75,7 @@ async function main() {
         console.log(JSON.stringify(scanResult, null, 2));
       }
 
-      if (args.values.dry_run) {
+      if (args.values['dry-run']) {
         console.log('\n  [dry run] Would generate files for:', formats.join(', '));
         printSummary(scanResult);
         break;

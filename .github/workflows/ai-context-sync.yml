@@ -46,9 +46,10 @@ jobs:
 
       - name: Generate context files
         run: obi init --format all
-        env:
-          # Optional: uncomment for LLM-enhanced rules
-          # ONBOARDAI_API_KEY: ${{ secrets.ONBOARDAI_API_KEY }}
+        # To enable LLM-enhanced rules, uncomment the lines below and add ONBOARDAI_API_KEY as a repo secret:
+        # run: obi init --format all --enhance
+        # env:
+        #   ONBOARDAI_API_KEY: ${{ secrets.ONBOARDAI_API_KEY }}
 
       - name: Check for changes
         id: changes

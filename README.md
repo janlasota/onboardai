@@ -1,5 +1,7 @@
 # onboardai
 
+**Website:** [onboardai.sh](https://onboardai.sh)
+
 **Auto-generate AI coding assistant context files from your codebase.**
 
 One command. Every AI tool. Stop manually writing `.cursorrules`, `CLAUDE.md`, and `copilot-instructions.md` — let your codebase speak for itself.

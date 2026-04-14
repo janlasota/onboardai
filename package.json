@@ -24,6 +24,7 @@
     "developer-tools",
     "cli"
   ],
+  "homepage": "https://onboardai.sh",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"

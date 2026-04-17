@@ -4,7 +4,7 @@
 
 **Auto-generate AI coding assistant context files from your codebase.**
 
-One command. Every AI tool. Stop manually writing `.cursorrules`, `CLAUDE.md`, and `copilot-instructions.md` — let your codebase speak for itself.
+One command. Every AI tool. Stop manually writing `.cursorrules`, `CLAUDE.md`, and `copilot-instructions.md`. Let your codebase speak for itself.
 
 ```bash
 npx onboardai
@@ -27,13 +27,13 @@ npx onboardai
 
 The CLI performs four analysis passes on your codebase:
 
-1. **Stack Detection** — reads `package.json`, `go.mod`, `Cargo.toml`, `requirements.txt`, etc. to identify languages, frameworks, and dependencies.
+1. **Stack Detection** reads `package.json`, `go.mod`, `Cargo.toml`, `requirements.txt`, etc. to identify languages, frameworks, and dependencies.
 
-2. **Structure Analysis** — walks your file tree to detect architectural patterns (App Router, MVC, feature-based, etc.) and key directories.
+2. **Structure Analysis** walks your file tree to detect architectural patterns (App Router, MVC, feature-based, etc.) and key directories.
 
-3. **Convention Inference** — samples source files to detect patterns like export style, quote style, semicolons, naming conventions, indentation, and TypeScript preferences.
+3. **Convention Inference** samples source files to detect patterns like export style, quote style, semicolons, naming conventions, indentation, and TypeScript preferences.
 
-4. **Rule Generation** — combines detected signals with framework-specific templates to produce tailored context files for each AI tool.
+4. **Rule Generation** combines detected signals with framework-specific templates to produce tailored context files for each AI tool.
 
 No API keys required. No network calls. Everything runs locally.
 
@@ -260,7 +260,7 @@ When your codebase changes in ways that affect context (new dependencies, restru
 
 Contributions are welcome! The best ways to help:
 
-1. **Add framework detection** — see `src/detectors/frameworks.js`
-2. **Improve convention inference** — see `src/analyzers/conventions.js`
-3. **Add generator formats** — see `src/generators/` for examples
-4. **Report bugs** — open an issue with your project structure (anonymized)
+1. **Add framework detection** in `src/detectors/frameworks.js`
+2. **Improve convention inference** in `src/analyzers/conventions.js`
+3. **Add generator formats** in `src/generators/`
+4. **Report bugs** by opening an issue with your project structure (anonymized)
